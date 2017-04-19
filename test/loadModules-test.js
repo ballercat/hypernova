@@ -52,6 +52,23 @@ describe('loadModules', () => {
     `);
   });
 
+  it('still works if a module throws a fatal', () => {
+    const environment = loadModules(require, [
+      './c.js',
+      './a.js',
+    ]);
+
+    const vm = createVM({
+      environment,
+    });
+
+    vm.run('test/loadModules-test.js', `
+      const assert = require('chai').assert;
+
+      assert.isDefined(global.a);
+    `);
+  });
+
   it('still works if a module that does not exist is passed in first', () => {
     const environment = loadModules(require, [
       './does-not-exist.js',

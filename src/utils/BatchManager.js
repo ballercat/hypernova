@@ -145,12 +145,14 @@ class BatchManager {
     const result = getComponent(name, context);
 
     return Promise.resolve(result).then((renderFn) => {
+      debugger;
       // ensure that we have this component registered
       if (!renderFn || typeof renderFn !== 'function') {
         // component not registered
-        context.statusCode = 404;
+        const error = renderFn instanceof Error ? renderFn : null;
+        context.statusCode = error ? 500 : 404;
         context.duration = msSince(start);
-        throw notFound(name);
+        throw error || notFound(name);
       }
 
       let response = null;

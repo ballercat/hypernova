@@ -14,7 +14,7 @@ function resolve(require, name) {
     return require.resolve(name);
   } catch (e) {
     if (e.code === 'MODULE_NOT_FOUND') return null;
-    throw e;
+    return e;
   }
 }
 

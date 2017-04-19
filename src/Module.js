@@ -87,7 +87,11 @@ class Module {
     };
 
     const compiledWrapper = runInNewContext(wrapper, this.context, options);
-    return compiledWrapper.call(this.exports, this.exports, require, this, filename, dirname);
+    try {
+      return compiledWrapper.call(this.exports, this.exports, require, this, filename, dirname);
+    } catch (e) {
+      return e;
+    }
   }
 
   static load(id, filename = id) {

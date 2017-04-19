@@ -96,6 +96,30 @@ describe('renderBatch', () => {
     });
   });
 
+  it.only('returns a error message', (done) => {
+    const expressRoute = renderBatch({
+      getComponent() {
+        return new Error('foo');
+      },
+      plugins: [],
+    }, () => false);
+
+    const { req, res } = makeExpress();
+
+    expressRoute(req, res).then(() => {
+      const { json } = res.getResponse();
+      const { a: { error, statusCode } } = json.results;
+
+      const { name, message } = error;
+
+      assert.equal(statusCode, 500);
+      assert.equal(name, 'Error');
+      assert.equal(message, 'foo');
+
+      done();
+    });
+  });
+
   it('rejects a Promise with a ReferenceError', (done) => {
     const expressRoute = renderBatch({
       getComponent() {
